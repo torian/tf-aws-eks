@@ -100,3 +100,20 @@ variable "worker_security_group_ids" {
   default     = []
 }
 
+variable "workers_iam_assume_role_root_account" {
+  description = ""
+  type        = bool
+  default     = true
+}
+
+variable "workers_iam_assume_role_policy" {
+  description = ""
+  type        = list(object({
+    sid                    = string
+    effect                 = string
+    principals_type        = string
+    principals_identifiers = list(string)
+  }))
+  default = []
+}
+

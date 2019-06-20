@@ -51,11 +51,11 @@ resource "aws_iam_role_policy" "workers-policies" {
 
 data "aws_iam_policy_document" "assume-role-cluster" {
   statement {
-    sid = "EKSAssumeRole"
+    sid     = "EKSAssumeRole"
     effect  = "Allow"
     actions = [ "sts:AssumeRole" ]
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = [ "eks.amazonaws.com" ]
     }
   }
@@ -63,14 +63,33 @@ data "aws_iam_policy_document" "assume-role-cluster" {
 
 data "aws_iam_policy_document" "assume-role-workers" {
   statement {
-    sid = "AssumeRole"
+    sid     = "AssumeRole"
     effect  = "Allow"
     actions = [ "sts:AssumeRole" ]
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = [ 
         "ec2.amazonaws.com",
       ]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = [ for s in local.workers_iam_assume_role_policy: {
+      sid                    = s.sid
+      effect                 = s.effect
+      principals_type        = s.principals_type
+      principals_identifiers = s.principals_identifiers
+    }]
+
+    content {
+      sid     = statement.value.sid
+      effect  = statement.value.effect
+      actions = [ "sts:AssumeRole" ]
+      principals {
+        type        = statement.value.principals_type
+        identifiers = statement.value.principals_identifiers
+      } 
     }
   }
 }

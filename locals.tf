@@ -47,6 +47,18 @@ locals {
     var.workers_sg_ingress,
   )
 
+  workers_iam_assume_role_policy = var.workers_iam_assume_role_root_account ? concat(
+    [
+      {
+        sid                    = "RootAccountAssumeRole"
+        effect                 = "Allow"
+        principals_type        = "AWS"
+        principals_identifiers = [ "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root" ]
+      }
+    ],
+    var.workers_iam_assume_role_policy
+  ) : []
+
   tags_worker_groups = merge(
     map("kubernetes.io/cluster/${aws_eks_cluster.cluster.name}",     "true"),
     map("k8s.io/cluster-autoscaler/${aws_eks_cluster.cluster.name}", "true"),
