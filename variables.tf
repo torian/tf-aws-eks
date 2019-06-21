@@ -103,7 +103,7 @@ variable "worker_security_group_ids" {
 variable "workers_iam_assume_role_root_account" {
   description = ""
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "workers_iam_assume_role_policy" {

@@ -57,7 +57,7 @@ locals {
       }
     ],
     var.workers_iam_assume_role_policy
-  ) : []
+  ) : var.workers_iam_assume_role_policy
 
   tags_worker_groups = merge(
     map("kubernetes.io/cluster/${aws_eks_cluster.cluster.name}",     "true"),
