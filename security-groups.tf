@@ -64,9 +64,9 @@ resource "aws_security_group_rule" "workers" {
   from_port                 = local.workers_sg_ingress[count.index]["from_port"]
   to_port                   = local.workers_sg_ingress[count.index]["to_port"]
   protocol                  = local.workers_sg_ingress[count.index]["protocol"]
-  self                      = local.workers_sg_ingress[count.index]["self"]
-  cidr_blocks               = local.workers_sg_ingress[count.index]["cidr_blocks"]
-  source_security_group_id  = local.workers_sg_ingress[count.index]["security_group"]
+  self                      = local.workers_sg_ingress[count.index]["self"] ? true : null
+  cidr_blocks               = length(local.workers_sg_ingress[count.index]["cidr_blocks"]) > 0 ? local.workers_sg_ingress[count.index]["cidr_blocks"] : null
+  source_security_group_id  = local.workers_sg_ingress[count.index]["security_group"] != ""    ? local.workers_sg_ingress[count.index]["security_group"] : null
   description               = local.workers_sg_ingress[count.index]["description"]
 }
 
